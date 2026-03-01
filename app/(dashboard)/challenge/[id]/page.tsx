@@ -53,7 +53,7 @@ export default function ChallengePage() {
       // Check if user is referee
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
-        setIsReferee(challengeData.referee_id === user.id);
+        setIsReferee((challengeData as any).referee_id === user.id);
       }
 
       // Fetch teams

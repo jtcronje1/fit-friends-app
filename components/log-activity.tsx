@@ -61,7 +61,7 @@ export function LogActivity({ challengeId, teams, onActivityLogged }: LogActivit
         .single();
 
       if (memberData) {
-        const team = teams.find((t) => t.id === memberData.team_id);
+        const team = teams.find((t) => t.id === (memberData as any).team_id);
         setUserTeam(team || null);
       }
     }
@@ -92,7 +92,7 @@ export function LogActivity({ challengeId, teams, onActivityLogged }: LogActivit
         proof_url: proofUrl || null,
         strava_link: stravaLink || null,
         notes: notes || null,
-      });
+      } as any);
 
       if (logError) throw logError;
 

@@ -53,21 +53,21 @@ export default function CreateChallengePage() {
           referee_id: user.id,
           status: "pending",
           max_participants: 6,
-        })
+        } as any)
         .select()
         .single();
 
       if (challengeError) throw challengeError;
 
       // Create teams
-      const { error: teamsError } = await supabase.from("teams").insert([
+      const { error: teamsError } = await (supabase.from("teams").insert as any)([
         {
-          challenge_id: challenge.id,
+          challenge_id: (challenge as any).id,
           name: team1Name,
           color: team1Color,
         },
         {
-          challenge_id: challenge.id,
+          challenge_id: (challenge as any).id,
           name: team2Name,
           color: team2Color,
         },
@@ -75,7 +75,7 @@ export default function CreateChallengePage() {
 
       if (teamsError) throw teamsError;
 
-      router.push(`/challenge/${challenge.id}`);
+      router.push(`/challenge/${(challenge as any).id}`);
     } catch (err: any) {
       setError(err.message || "Failed to create challenge");
       setLoading(false);

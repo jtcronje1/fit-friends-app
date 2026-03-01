@@ -52,7 +52,7 @@ export function ActivityFeed({ activities, teams, isReferee, onActivityDeleted }
         raised_by: user.id,
         reason: disputeReason,
         status: "open",
-      });
+      } as any);
 
       if (error) throw error;
 
@@ -73,9 +73,9 @@ export function ActivityFeed({ activities, teams, isReferee, onActivityDeleted }
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      const { error } = await supabase
+      const { error } = await (supabase
         .from("activity_logs")
-        .update({
+        .update as any)({
           deleted_at: new Date().toISOString(),
           deleted_by: user.id,
         })
