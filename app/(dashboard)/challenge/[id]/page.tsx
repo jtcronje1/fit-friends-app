@@ -28,10 +28,14 @@ export default function ChallengePage() {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("log");
   const [inviteCopied, setInviteCopied] = useState(false);
+  const [inviteUrl, setInviteUrl] = useState("");
 
   useEffect(() => {
     fetchChallengeData();
     checkUser();
+    if (typeof window !== 'undefined') {
+      setInviteUrl(window.location.origin);
+    }
   }, [challengeId]);
 
   const checkUser = async () => {
@@ -84,9 +88,9 @@ export default function ChallengePage() {
   };
 
   const copyInviteLink = () => {
-    if (!challenge?.invite_code) return;
-    const inviteUrl = `${window.location.origin}/invite/${challenge.invite_code}`;
-    navigator.clipboard.writeText(inviteUrl);
+    if (!challenge?.invite_code || !inviteUrl) return;
+    const fullInviteUrl = `${inviteUrl}/invite/${challenge.invite_code}`;
+    navigator.clipboard.writeText(fullInviteUrl);
     setInviteCopied(true);
     setTimeout(() => setInviteCopied(false), 2000);
   };
@@ -189,7 +193,7 @@ export default function ChallengePage() {
             </p>
             <div className="flex gap-2">
               <div className="flex-1 bg-white rounded-lg px-3 py-2 text-sm text-slate-500 truncate border border-slate-200">
-                {typeof window !== 'undefined' && `${window.location.origin}/invite/${challenge.invite_code}`}
+                {inviteUrl && `${inviteUrl}/invite/${challenge.invite_code}`}
               </div>
               <Button
                 onClick={copyInviteLink}
