@@ -43,13 +43,14 @@ export default function InvitePage() {
         .single();
 
       if (challengeError) throw new Error("Invalid invite link");
-      setChallenge(challengeData);
+      const challenge = challengeData as Challenge;
+      setChallenge(challenge);
 
       // Fetch teams
       const { data: teamsData, error: teamsError } = await supabase
         .from("teams")
         .select("*")
-        .eq("challenge_id", challengeData.id);
+        .eq("challenge_id", challenge.id);
 
       if (teamsError) throw teamsError;
       setTeams(teamsData || []);
