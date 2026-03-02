@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { supabase } from "@/lib/supabase";
 import { getNextMonday, getChallengeEndDate } from "@/lib/exercises";
+import { generateInviteCode } from "@/lib/utils";
 
 export default function CreateChallengePage() {
   const router = useRouter();
@@ -41,6 +42,9 @@ export default function CreateChallengePage() {
       const start = new Date(startDate);
       const end = getChallengeEndDate(start);
 
+      // Generate invite code
+      const inviteCode = generateInviteCode();
+
       // Create challenge
       const { data: challenge, error: challengeError } = await supabase
         .from("challenges")
@@ -53,6 +57,7 @@ export default function CreateChallengePage() {
           referee_id: user.id,
           status: "pending",
           max_participants: 6,
+          invite_code: inviteCode,
         } as any)
         .select()
         .single();

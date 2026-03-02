@@ -27,6 +27,7 @@ export interface Challenge {
   referee_id: string;
   status: 'pending' | 'active' | 'completed';
   max_participants: number;
+  invite_code?: string;
   created_at: string;
 }
 

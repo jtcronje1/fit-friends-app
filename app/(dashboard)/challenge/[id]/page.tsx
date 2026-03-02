@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { Trophy, ArrowLeft, Users, Calendar, MoreHorizontal, Shield } from "lucide-react";
+import { Trophy, ArrowLeft, Users, Calendar, MoreHorizontal, Shield, Link2, Share2, Copy, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
@@ -27,6 +27,7 @@ export default function ChallengePage() {
   const [isReferee, setIsReferee] = useState(false);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("log");
+  const [inviteCopied, setInviteCopied] = useState(false);
 
   useEffect(() => {
     fetchChallengeData();
@@ -80,6 +81,14 @@ export default function ChallengePage() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const copyInviteLink = () => {
+    if (!challenge?.invite_code) return;
+    const inviteUrl = `${window.location.origin}/invite/${challenge.invite_code}`;
+    navigator.clipboard.writeText(inviteUrl);
+    setInviteCopied(true);
+    setTimeout(() => setInviteCopied(false), 2000);
   };
 
   const getStatusColor = (status: string) => {
@@ -163,6 +172,46 @@ export default function ChallengePage() {
 
       {/* Team Scores */}
       <TeamScores teams={teams} activities={activities} />
+
+      {/* Invite Link */}
+      {challenge.invite_code && (
+        <div className="container mx-auto px-4 py-4">
+          <div className="bg-gradient-to-r from-orange-50 to-blue-50 rounded-xl p-4 border border-orange-100">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <Share2 className="h-5 w-5 text-orange-500" />
+                <span className="font-semibold text-slate-900">Invite Friends</span>
+              </div>
+              <Badge variant="outline" className="text-xs">{challenge.max_participants} max</Badge>
+            </div>
+            <p className="text-sm text-slate-600 mb-3">
+              Share this link to invite friends to join your challenge
+            </p>
+            <div className="flex gap-2">
+              <div className="flex-1 bg-white rounded-lg px-3 py-2 text-sm text-slate-500 truncate border border-slate-200">
+                {typeof window !== 'undefined' && `${window.location.origin}/invite/${challenge.invite_code}`}
+              </div>
+              <Button
+                onClick={copyInviteLink}
+                size="sm"
+                className={`${inviteCopied ? 'bg-green-500 hover:bg-green-600' : 'bg-orange-500 hover:bg-orange-600'} text-white`}
+              >
+                {inviteCopied ? (
+                  <>
+                    <Check className="h-4 w-4 mr-1" />
+                    Copied!
+                  </>
+                ) : (
+                  <>
+                    <Copy className="h-4 w-4 mr-1" />
+                    Copy
+                  </>
+                )}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Main Content */}
       <main className="pb-24">
