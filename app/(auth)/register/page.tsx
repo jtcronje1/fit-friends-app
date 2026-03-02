@@ -36,18 +36,14 @@ export default function RegisterPage() {
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email,
         password,
+        options: {
+          data: {
+            name: name,
+          },
+        },
       });
 
       if (authError) throw authError;
-
-      if (authData.user) {
-        const { error: profileError } = await supabase.from("profiles").insert({
-          user_id: authData.user.id,
-          name: name,
-        } as any);
-
-        if (profileError) throw profileError;
-      }
 
       router.push("/dashboard");
       router.refresh();
